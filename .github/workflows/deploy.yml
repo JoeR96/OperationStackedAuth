@@ -6,8 +6,8 @@ on:
       - main
 
 env:
-  AWS_REGION: <your-aws-region>
-  ECR_REPOSITORY: <your-ecr-repository-name>
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPOSITORY: cognito-auth-api
 
 jobs:
   deploy:
@@ -36,7 +36,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION }}
 
     - name: Update LightSail container service
       run: |
