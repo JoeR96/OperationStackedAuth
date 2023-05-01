@@ -4,6 +4,7 @@ using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.AspNetCore.Mvc;
 using OperationStackedAuth.Requests;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,8 +29,6 @@ namespace OperationStackedAuth.Controllers
         {
             var user = _userPool.GetUser(request.Email);
 
-            // Calculate the SECRET_HASH
-            var secretHash = CalculateSecretHash(_userPool.ClientID, Environment.GetEnvironmentVariable("AWS_UserPoolClientSecret"), user.Username);
 
             var signUpRequest = new SignUpRequest()
             {
@@ -92,13 +91,21 @@ namespace OperationStackedAuth.Controllers
 
             if (authResponse.AuthenticationResult != null)
             {
+                // Decode the ID token
+                var handler = new JwtSecurityTokenHandler();
+                var decodedToken = handler.ReadJwtToken(authResponse.AuthenticationResult.IdToken);
+
+                // Get the "sub" claim
+                var subClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
                 return Ok(new
                 {
                     authResponse.AuthenticationResult.IdToken,
                     authResponse.AuthenticationResult.AccessToken,
                     authResponse.AuthenticationResult.RefreshToken,
                     authResponse.AuthenticationResult.TokenType,
-                    authResponse.AuthenticationResult.ExpiresIn
+                    authResponse.AuthenticationResult.ExpiresIn,
+                    UserId = subClaim
                 });
             }
 

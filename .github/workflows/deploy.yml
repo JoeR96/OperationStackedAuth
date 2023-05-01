@@ -33,16 +33,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ steps.login-ecr.outputs.registry }}/your-ecr-repository:${{ github.sha }}
-
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Update LightSail container service
-      run: |
-        aws lightsail update-container-service --service-name <your-lightsail-service-name> --public-endpoint '{"containerName":"<your-container-name>","containerPort":80}'
-        aws lightsail push-container-image --service-name <your-lightsail-service-name> --label <your-lightsail-container-label> --image-and-tag ${{ steps.login-ecr.outputs.registry }}/your-ecr-repository:${{ github.sha }}
+        tags: ${{ steps.login-ecr.outputs.registry }}/cognito-auth-api:${{ github.sha }}
