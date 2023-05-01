@@ -3,11 +3,8 @@ using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OperationStackedAuth.Data;
-using OperationStackedAuth.Options;
 await ConfigureSecret();
 
 async Task ConfigureSecret()
@@ -69,11 +66,10 @@ builder.Services.AddDbContext<OperationStackedAuthDbContext>();
 // Configure the HTTP request pipeline.
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 
