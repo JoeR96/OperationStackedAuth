@@ -51,4 +51,3 @@ jobs:
         aws lightsail create-container-service-deployment \
           --service-name operation-stacked \
           --containers file://containers.json \
-          --container-service file://container-service.json
