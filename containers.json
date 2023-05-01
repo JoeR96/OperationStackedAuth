@@ -1,14 +1,24 @@
 {
   "workout-container": {
-    "image": "108546418244.dkr.ecr.eu-west-2.amazonaws.com/operation-stacked-workout:latest",
+    "image": "108546418244.dkr.ecr.eu-west-2.amazonaws.com/operation-stacked-workout/operation-stacked-workout:latest",
     "ports": {
       "5001": "HTTP"
+    },
+    "environment": {
+      "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+      "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+      "AWS_REGION": "${AWS_REGION}"
     }
   },
   "auth-container": {
     "image": "108546418244.dkr.ecr.eu-west-2.amazonaws.com/operation-stacked-auth:latest",
     "ports": {
       "5000": "HTTP"
+    },
+    "environment": {
+      "AWS_ACCESS_KEY_ID": "${AWS_ACCESS_KEY_ID}",
+      "AWS_SECRET_ACCESS_KEY": "${AWS_SECRET_ACCESS_KEY}",
+      "AWS_REGION": "${AWS_REGION}"
     }
   }
 }
