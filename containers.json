@@ -1,32 +1,22 @@
 {
   "workout-container": {
-    "image": "operation-stacked:latest",
+    "image": "108546418244.dkr.ecr.eu-west-2.amazonaws.com/operation-stacked-workout/operation-stacked-workout:latest",
     "ports": {
       "5001": "HTTP"
     },
     "environment": {
       "ENV_VAR_1": "value1",
       "ENV_VAR_2": "value2"
-    },
-    "publicEndpoint": {
-      "containerName": "workout-container",
-      "containerPort": 5001,
-      "healthCheckPath": "/workout/health"
     }
   },
   "auth-container": {
-    "image": "operation-stacked-auth:latest",
+    "image": "108546418244.dkr.ecr.eu-west-2.amazonaws.com/operation-stacked-auth/operation-stacked-auth:latest",
     "ports": {
       "5000": "HTTP"
     },
     "environment": {
       "ENV_VAR_1": "value1",
       "ENV_VAR_2": "value2"
-    },
-    "publicEndpoint": {
-      "containerName": "auth-container",
-      "containerPort": 5000,
-      "healthCheckPath": "/auth/health"
     }
   }
 }
