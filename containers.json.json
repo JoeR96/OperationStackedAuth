@@ -1,0 +1,20 @@
+{
+  "workout-container": {
+    "image": "your-ecr-repo-url/operation-stacked:latest",
+    "ports": {
+      "5001": "HTTP"
+    },
+    "environment": {
+      "KEY": "VALUE"
+    }
+  },
+  "auth-container": {
+    "image": "your-ecr-repo-url/operation-stacked-auth:latest",
+    "ports": {
+      "5000": "HTTP"
+    },
+    "environment": {
+      "KEY": "VALUE"
+    }
+  }
+}

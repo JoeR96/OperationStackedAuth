@@ -1,0 +1,17 @@
+{
+  "http": {
+    "healthCheckPath": "/health",
+    "pathMappings": [
+      {
+        "paths": [ "/workout/*" ],
+        "containerName": "workout-container",
+        "containerPort": 5001
+      },
+      {
+        "paths": [ "/auth/*" ],
+        "containerName": "auth-container",
+        "containerPort": 5000
+      }
+    ]
+  }
+}
