@@ -68,7 +68,6 @@ namespace OperationStackedAuth.Controllers
             var user = _userPool.GetUser(request.Email);
 
             // Calculate the SECRET_HASH
-            var secretHash = CalculateSecretHash(_userPool.ClientID, Environment.GetEnvironmentVariable("AWS_UserPoolClientSecret"), user.Username);
 
             AuthFlowResponse authResponse;
 
@@ -178,14 +177,7 @@ namespace OperationStackedAuth.Controllers
         }
 
 
-        private string CalculateSecretHash(string clientId, string clientSecret, string username)
-        {
-            var data = Encoding.UTF8.GetBytes($"{username}{clientId}");
-            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(clientSecret));
-            var hash = hmac.ComputeHash(data);
-            return Convert.ToBase64String(hash);
-        }
-
+   
 
     }
 }

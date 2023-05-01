@@ -1,10 +1,45 @@
 using Amazon;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using OperationStackedAuth.Data;
 using OperationStackedAuth.Options;
+await ConfigureSecret();
+
+async Task ConfigureSecret()
+{
+    var clientsecret = new AmazonSecretsManagerClient(Amazon.RegionEndpoint.EUWest2);
+
+    var request1 = new GetSecretValueRequest
+    {
+        SecretId = "AWS_UserPoolId"
+    };
+
+    var response1 = await clientsecret.GetSecretValueAsync(request1);
+
+    var secretJson = response1.SecretString;
+
+    var secret1 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson);
+
+    var request2 = new GetSecretValueRequest
+    {
+        SecretId = "AWS_UserPoolClientId"
+    };
+
+    var response2 = await clientsecret.GetSecretValueAsync(request2);
+
+    var secretJson2 = response2.SecretString;
+
+    var secret2 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson2);
+
+
+    Environment.SetEnvironmentVariable("AWS_UserPoolId", secret1.FirstOrDefault().Value);
+    Environment.SetEnvironmentVariable("AWS_UserPoolClientId", secret2.FirstOrDefault().Value);
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
