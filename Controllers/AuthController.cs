@@ -12,7 +12,6 @@ using System.Text;
 namespace OperationStackedAuth.Controllers
 {
     [ApiController]
-    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly CognitoUserPool _userPool;
