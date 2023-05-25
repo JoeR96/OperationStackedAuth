@@ -40,7 +40,14 @@ jobs:
           echo "export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
           echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
           echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
-
+          
+      - name: Generate OpenAPI specification (swagger.json)
+        run: |
+            dotnet run /t:GenerateOpenApiSpec
+            - name: Upload OpenAPI spec to S3
+              run: |
+                aws s3 cp swagger.json s3://${{ secrets.S3_BUCKET_NAME }}/swagger.json
+            
       - name: SSH into EC2 and deploy new container
         uses: appleboy/ssh-action@master
         with:
