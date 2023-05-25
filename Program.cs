@@ -1,43 +1,7 @@
 using Amazon;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
-using Amazon.SecretsManager;
-using Amazon.SecretsManager.Model;
-using Newtonsoft.Json;
 using OperationStackedAuth.Data;
-await ConfigureSecret();
-
-async Task ConfigureSecret()
-{
-    var clientsecret = new AmazonSecretsManagerClient(Amazon.RegionEndpoint.EUWest2);
-
-    var request1 = new GetSecretValueRequest
-    {
-        SecretId = "AWS_UserPoolId"
-    };
-
-    var response1 = await clientsecret.GetSecretValueAsync(request1);
-
-    var secretJson = response1.SecretString;
-
-    var secret1 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson);
-
-    var request2 = new GetSecretValueRequest
-    {
-        SecretId = "AWS_UserPoolClientId"
-    };
-
-    var response2 = await clientsecret.GetSecretValueAsync(request2);
-
-    var secretJson2 = response2.SecretString;
-
-    var secret2 = JsonConvert.DeserializeObject<Dictionary<string, string>>(secretJson2);
-
-
-    Environment.SetEnvironmentVariable("AWS_UserPoolId", secret1.FirstOrDefault().Value);
-    Environment.SetEnvironmentVariable("AWS_UserPoolClientId", secret2.FirstOrDefault().Value);
-}
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -56,7 +20,6 @@ builder.Services.AddSingleton(x =>
 {
     var userPoolId = Environment.GetEnvironmentVariable("AWS_UserPoolId");
     var userPoolClientId = Environment.GetEnvironmentVariable("AWS_UserPoolClientId");
-    var t = Environment.GetEnvironmentVariables();
     return new CognitoUserPool(userPoolId, userPoolClientId, x.GetRequiredService<IAmazonCognitoIdentityProvider>());
 });
 
@@ -66,10 +29,8 @@ builder.Services.AddDbContext<OperationStackedAuthDbContext>();
 // Configure the HTTP request pipeline.
 var app = builder.Build();
 
-
 app.UseSwagger();
-app.UseSwaggerUI();
-
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Operation Stacked Auth V1"));
 
 app.UseHttpsRedirection();
 

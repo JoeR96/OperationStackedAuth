@@ -62,6 +62,8 @@ namespace OperationStackedAuth.Controllers
 
 
         [HttpPost("login")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)] // Add this line
+
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var user = _userPool.GetUser(request.Email);
@@ -96,15 +98,14 @@ namespace OperationStackedAuth.Controllers
                 // Get the "sub" claim
                 var subClaim = decodedToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
 
-                return Ok(new
-                {
+                return Ok(new AuthResponse(
                     authResponse.AuthenticationResult.IdToken,
                     authResponse.AuthenticationResult.AccessToken,
                     authResponse.AuthenticationResult.RefreshToken,
                     authResponse.AuthenticationResult.TokenType,
                     authResponse.AuthenticationResult.ExpiresIn,
-                    UserId = subClaim
-                });
+subClaim
+                ));
             }
 
             return BadRequest("Login failed");
@@ -179,5 +180,7 @@ namespace OperationStackedAuth.Controllers
    
 
     }
+
+    internal record AuthResponse(string IdToken, string AccessToken, string RefreshToken, string TokenType, int ExpiresIn, string? UserId);
 }
 

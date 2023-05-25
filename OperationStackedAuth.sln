@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OperationStackedAuth", "OperationStackedAuth.csproj", "{31C4A0AE-08F3-4FB0-AF53-2B608FD3BB60}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OperationStackedAuth.Tests", "..\OperationStackedAuth.Tests\OperationStackedAuth.Tests.csproj", "{9C0673DC-0532-40EF-8262-93013ADEFA33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{31C4A0AE-08F3-4FB0-AF53-2B608FD3BB60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31C4A0AE-08F3-4FB0-AF53-2B608FD3BB60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31C4A0AE-08F3-4FB0-AF53-2B608FD3BB60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C0673DC-0532-40EF-8262-93013ADEFA33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C0673DC-0532-40EF-8262-93013ADEFA33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C0673DC-0532-40EF-8262-93013ADEFA33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C0673DC-0532-40EF-8262-93013ADEFA33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

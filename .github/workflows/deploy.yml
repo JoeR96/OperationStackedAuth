@@ -14,56 +14,66 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout workout-app code
-      uses: actions/checkout@v2
+      - name: Checkout workout-app code
+        uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-      env:
-        AWS_REGION: ${{ secrets.AWS_REGION }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.login-ecr.outputs.registry }}/operation-stacked-auth:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/operation-stacked-auth:latest
 
-    - name: Update container-service.json with the new image
-      run: |
-        # Update the container-service.json file with the new image URL for workout-container
-        # You can use a tool like jq or a script to perform the update
+      - name: Set AWS credentials as environment variables
+        run: |
+          echo "export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+          echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+          echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
 
-    - name: Set AWS credentials as environment variables
-      run: |
-        echo "export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-        echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-        echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
+      - name: Install AWS CLI
+        run: |
+          curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
 
-    - name: SSH into EC2 and deploy new container
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USERNAME }}
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        script: |
-          # Stop and remove the existing container
-          sudo docker stop operation-stacked-auth
-          sudo docker rm operation-stacked-auth
+      - name: Get AWS secrets and set as environment variables
+        run: |
+          USER_POOL_ID=$(aws secretsmanager get-secret-value --secret-id AWS_UserPoolId --query SecretString --output text)
+          USER_POOL_CLIENT_ID=$(aws secretsmanager get-secret-value --secret-id AWS_UserPoolClientId --query SecretString --output text)
+          echo "AWS_UserPoolId=${USER_POOL_ID}" >> $GITHUB_ENV
+          echo "AWS_UserPoolClientId=${USER_POOL_CLIENT_ID}" >> $GITHUB_ENV
 
-          # Pull the latest image from ECR
-          sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-auth:latest
-
-          # Start the new container
-          sudo docker run -d -p 5001:80 \
-          -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
-          -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
-          -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
-          --name operation-stacked-auth \
-          ${{ secrets.ECR_URL }}/operation-stacked-auth:latest
+      - name: SSH into EC2 and deploy new container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            # Stop and remove the existing container
+            sudo docker stop operation-stacked-auth
+            sudo docker rm operation-stacked-auth
+            
+            # Pull the latest image from ECR
+            sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-auth:latest
+            
+            # Start the new container
+            sudo docker run -d -p 5001:80 \
+            -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
+            -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+            -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
+            -e AWS_UserPoolId=${{ env.AWS_UserPoolId }} \
+            -e AWS_UserPoolClientId=${{ env.AWS_UserPoolClientId }} \
+            --name operation-stacked-auth \
+            ${{ secrets.ECR_URL }}/operation-stacked-auth:latest
