@@ -41,13 +41,6 @@ jobs:
           echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
           echo "export AWS_REGION=${{ secrets.AWS_REGION }}" >> $GITHUB_ENV
 
-      - name: Get AWS secrets and set as environment variables
-        run: |
-          USER_POOL_ID=$(aws secretsmanager get-secret-value --secret-id AWS_UserPoolId --query SecretString --output text)
-          USER_POOL_CLIENT_ID=$(aws secretsmanager get-secret-value --secret-id AWS_UserPoolClientId --query SecretString --output text)
-          echo "AWS_UserPoolId=${USER_POOL_ID}" >> $GITHUB_ENV
-          echo "AWS_UserPoolClientId=${USER_POOL_CLIENT_ID}" >> $GITHUB_ENV
-
       - name: SSH into EC2 and deploy new container
         uses: appleboy/ssh-action@master
         with:
@@ -67,7 +60,7 @@ jobs:
             -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} \
             -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
             -e AWS_DEFAULT_REGION=${{ secrets.AWS_REGION }} \
-            -e AWS_UserPoolId=${{ env.AWS_UserPoolId }} \
-            -e AWS_UserPoolClientId=${{ env.AWS_UserPoolClientId }} \
+            -e AWS_UserPoolId=${{ secrets.AWS_UserPoolId }} \
+            -e AWS_UserPoolClientId=${{ secrets.AWS_UserPoolClientId }} \
             --name operation-stacked-auth \
             ${{ secrets.ECR_URL }}/operation-stacked-auth:latest
