@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
 # Copy and restore the main project file
-COPY ["./OperationStackedAuth/OperationStackedAuth.csproj", "OperationStackedAuth/"]
+COPY ["../OperationStackedAuth/OperationStackedAuth.csproj", "OperationStackedAuth/"]
 RUN dotnet restore "OperationStackedAuth/OperationStackedAuth.csproj"
 
 # Copy and restore the test project file
