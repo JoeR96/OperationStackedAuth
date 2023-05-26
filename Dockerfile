@@ -10,7 +10,7 @@ WORKDIR /src
 COPY ["./OperationStackedAuth.csproj", "."]
 COPY ["./OperationStackedAuth.Tests.csproj", "."]
 RUN dotnet restore "./OperationStackedAuth.csproj"
-RUN dotnet restore "./OperationStackedAuth.Tests/OperationStackedAuth.Tests.csproj"
+RUN dotnet restore "./OperationStackedAuth.Tests.csproj"
 COPY . .
 WORKDIR "/src/."
 RUN dotnet build "OperationStackedAuth.csproj" -c Release -o /app/build
