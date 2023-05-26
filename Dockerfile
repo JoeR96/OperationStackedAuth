@@ -8,7 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["./OperationStackedAuth.csproj", "."]
-COPY ["./OperationStackedAuth.Tests.csproj", "."]
+COPY ["../OperationStackedAuth.Tests.csproj", "."]
 RUN dotnet restore "./OperationStackedAuth.csproj"
 RUN dotnet restore "./OperationStackedAuth.Tests.csproj"
 COPY . .
