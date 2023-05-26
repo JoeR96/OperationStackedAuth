@@ -1,5 +1,3 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 # Base image for running the application
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
@@ -11,16 +9,16 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 
 # Copy and restore the main project file
-COPY ["OperationStackedAuth.csproj", "."]
-RUN dotnet restore "OperationStackedAuth.csproj"
+COPY ["OperationStackedAuth.csproj", "./OperationStackedAuth/"]
+RUN dotnet restore "./OperationStackedAuth/OperationStackedAuth.csproj"
 
 # Copy and restore the test project file
-COPY ["../OperationStackedAuth.Tests/OperationStackedAuth.Tests.csproj", "../OperationStackedAuth.Tests/"]
-RUN dotnet restore "../OperationStackedAuth.Tests/OperationStackedAuth.Tests.csproj"
+COPY ["OperationStackedAuth.Tests.csproj", "./OperationStackedAuth.Tests/"]
+RUN dotnet restore "./OperationStackedAuth.Tests/OperationStackedAuth.Tests.csproj"
 
 # Copy the entire solution and build the application
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/OperationStackedAuth"
 RUN dotnet build "OperationStackedAuth.csproj" -c Release -o /app/build
 
 # Publish the application
