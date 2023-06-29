@@ -1,18 +1,14 @@
+using Concise.Steps;
 using FluentAssertions;
 
 namespace OperationStackedAuth.Tests
 {
     public class LoginTest
     {
-       
-        const string baseUrl = "http://13.40.62.72:5001";
-
         [Test]
         public async Task LogIn_AndReceiveToken()
         {
-
-            var client = new HttpClient();
-            var authClient = new swaggerClient(baseUrl, client);
+            swaggerClient authClient = ApiClientFactory.CreateApiClient();
 
             var request = new LoginRequest
             {
@@ -20,8 +16,13 @@ namespace OperationStackedAuth.Tests
                 Password = "Zelfdwnq9512!"
             };
 
-            var response = await authClient.LoginAsync(request);
-            response.IdToken.Should().NotBeNullOrWhiteSpace();
+            await "login".__(async () =>
+            {
+                var response = await authClient.LoginAsync(request);
+                response.IdToken.Should().NotBeNullOrWhiteSpace();
+            });
         }
+
+        
     }
 }

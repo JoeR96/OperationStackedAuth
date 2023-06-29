@@ -104,7 +104,7 @@ namespace OperationStackedAuth.Controllers
                     authResponse.AuthenticationResult.RefreshToken,
                     authResponse.AuthenticationResult.TokenType,
                     authResponse.AuthenticationResult.ExpiresIn,
-subClaim
+Guid.Parse(subClaim)
                 ));
             }
 
@@ -181,6 +181,6 @@ subClaim
 
     }
 
-    internal record AuthResponse(string IdToken, string AccessToken, string RefreshToken, string TokenType, int ExpiresIn, string? UserId);
+    internal record AuthResponse(string IdToken, string AccessToken, string RefreshToken, string TokenType, int ExpiresIn, Guid UserId);
 }
 
