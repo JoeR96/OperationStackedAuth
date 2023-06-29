@@ -16,13 +16,11 @@ namespace OperationStackedAuth.Tests
                 Password = "Zelfdwnq9512!"
             };
 
-            await "login".__(async () =>
+            await "Login snould return access token".__(async () =>
             {
                 var response = await authClient.LoginAsync(request);
                 response.IdToken.Should().NotBeNullOrWhiteSpace();
             });
         }
-
-        
     }
 }
