@@ -13,7 +13,7 @@ COPY ["../OperationStackedAuth/OperationStackedAuth.csproj", "OperationStackedAu
 RUN dotnet restore "OperationStackedAuth/OperationStackedAuth.csproj"
 
 # Copy and restore the test project file
-COPY ["../OperationStackedAuth.Tests/OperationStackedAuth.Tests.csproj", "OperationStackedAuth.Tests/"]
+COPY ["../../OperationStackedAuth.Tests/OperationStackedAuth.Tests.csproj", "OperationStackedAuth.Tests/"]
 RUN dotnet restore "OperationStackedAuth.Tests/OperationStackedAuth.Tests.csproj"
 
 # Copy the entire solution and build the application
