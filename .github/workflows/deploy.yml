@@ -54,9 +54,9 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            # Stop and remove the existing container
-            sudo docker stop operation-stacked-auth
-            sudo docker rm operation-stacked-auth
+            ## Stop and remove the existing container
+            #sudo docker stop operation-stacked-auth
+            #sudo docker rm operation-stacked-auth
             
             # Pull the latest image from ECRs
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-auth:latest
