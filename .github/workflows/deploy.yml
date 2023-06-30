@@ -58,7 +58,7 @@ jobs:
             sudo docker stop operation-stacked-auth
             sudo docker rm operation-stacked-auth
             
-            # Pull the latest image from ECR
+            # Pull the latest image from ECRs
             sudo docker pull ${{ secrets.ECR_URL }}/operation-stacked-auth:latest
             
             # Start the new container
